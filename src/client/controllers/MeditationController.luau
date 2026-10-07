@@ -2,6 +2,12 @@
 -- client/controllers/MeditationController.luau
 -- Sends the player's meditate intent to the server. The server owns whether Qi
 -- actually rises; this controller only sends inputs and shows a simple posture cue.
+--
+-- WalkSpeed is driven by the server-synced "State" attribute, not a self-tracked
+-- flag: a flag that's only updated optimistically on click can desync from the
+-- server (e.g. a SetMeditating(true) sent while already Meditating/Circulating is
+-- correctly rejected server-side but was still "accepted" locally) and, worse, can
+-- leave WalkSpeed stuck at 0 into a tribulation the player then can't dodge.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -14,34 +20,35 @@ local player = Players.LocalPlayer
 
 local MeditationController = {}
 
-function MeditationController:Init(_controllers: { [string]: any })
-	self._meditating = false
-end
+function MeditationController:Init(_controllers: { [string]: any }) end
 
 function MeditationController:IsMeditating(): boolean
-	return self._meditating
+	return player:GetAttribute("State") == "Meditating"
 end
 
-function MeditationController:_setMeditating(on: boolean)
-	self._meditating = on
-
-	local setMeditating = Remotes.Get("SetMeditating") :: RemoteEvent
-	setMeditating:FireServer(on)
-
+local function applyWalkSpeedForState()
 	local character = player.Character
 	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-	if humanoid then
-		humanoid.WalkSpeed = if on then 0 else WALK_SPEED
+	if not humanoid then
+		return
 	end
+	humanoid.WalkSpeed = if player:GetAttribute("State") == "Meditating" then 0 else WALK_SPEED
 end
 
 function MeditationController:Toggle()
-	self:_setMeditating(not self._meditating)
+	local setMeditating = Remotes.Get("SetMeditating") :: RemoteEvent
+	setMeditating:FireServer(not self:IsMeditating())
 end
 
 function MeditationController:Start()
+	player.AttributeChanged:Connect(function(attribute: string)
+		if attribute == "State" then
+			applyWalkSpeedForState()
+		end
+	end)
+
 	player.CharacterAdded:Connect(function()
-		self._meditating = false
+		task.defer(applyWalkSpeedForState)
 	end)
 
 	print("[MeditationController] started")

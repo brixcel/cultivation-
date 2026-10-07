@@ -22,10 +22,14 @@ local function buildOverlay(): (ScreenGui, TextLabel, TextLabel, TextButton)
 	screen.Enabled = false
 	screen.Parent = player:WaitForChild("PlayerGui")
 
+	-- Anchored from the BOTTOM of the screen, not the top: UIController's HUD column
+	-- (realm label through onboarding hint) occupies roughly the top 350px, and these
+	-- two ScreenGuis are built independently with no shared layout, so top-anchored
+	-- positions here would collide with those buttons (and did, before this fix).
 	local nodeLabel = Instance.new("TextLabel")
 	nodeLabel.Name = "NodeLabel"
 	nodeLabel.Size = UDim2.fromOffset(300, 40)
-	nodeLabel.Position = UDim2.new(0.5, -150, 0, 160)
+	nodeLabel.Position = UDim2.new(0.5, -150, 1, -250)
 	nodeLabel.BackgroundTransparency = 1
 	nodeLabel.Font = Enum.Font.GothamBold
 	nodeLabel.TextSize = 24
@@ -36,7 +40,7 @@ local function buildOverlay(): (ScreenGui, TextLabel, TextLabel, TextButton)
 	local feedbackLabel = Instance.new("TextLabel")
 	feedbackLabel.Name = "FeedbackLabel"
 	feedbackLabel.Size = UDim2.fromOffset(300, 30)
-	feedbackLabel.Position = UDim2.new(0.5, -150, 0, 200)
+	feedbackLabel.Position = UDim2.new(0.5, -150, 1, -200)
 	feedbackLabel.BackgroundTransparency = 1
 	feedbackLabel.Font = Enum.Font.GothamBold
 	feedbackLabel.TextSize = 18
@@ -47,7 +51,7 @@ local function buildOverlay(): (ScreenGui, TextLabel, TextLabel, TextButton)
 	local tapButton = Instance.new("TextButton")
 	tapButton.Name = "TapButton"
 	tapButton.Size = UDim2.fromOffset(140, 140)
-	tapButton.Position = UDim2.new(0.5, -70, 0, 240)
+	tapButton.Position = UDim2.new(0.5, -70, 1, -160)
 	tapButton.BackgroundColor3 = Color3.fromRGB(46, 139, 87)
 	tapButton.Font = Enum.Font.GothamBold
 	tapButton.TextSize = 22

@@ -83,7 +83,6 @@ function UIController:Start()
 	local meditationController = self._meditationController
 	cultivateButton.Activated:Connect(function()
 		meditationController:Toggle()
-		cultivateButton.Text = if meditationController:IsMeditating() then "Stop" else "Cultivate"
 	end)
 
 	local circulateButton = Instance.new("TextButton")
@@ -167,6 +166,7 @@ function UIController:Start()
 		end
 
 		onboardingLabel.Visible = tutorialDone ~= true
+		cultivateButton.Text = if meditationController:IsMeditating() then "Stop" else "Cultivate"
 	end
 
 	player.AttributeChanged:Connect(refresh)
