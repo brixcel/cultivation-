@@ -1,11 +1,16 @@
 --!strict
 -- client/controllers/UIController.luau
--- HUD: Qi bar, realm label, Cultivate button. Reads truth from Player attributes,
--- which the server keeps in sync; this controller only renders them.
+-- HUD: Qi bar, realm label, Cultivate/Circulate/Breakthrough buttons, toast
+-- notifications. Reads truth from Player attributes, which the server keeps in
+-- sync; this controller only renders them.
 
 local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Remotes = require(ReplicatedStorage.Shared.remotes.Remotes)
 
 local player = Players.LocalPlayer
+local TOAST_DURATION = 2.5
 
 local UIController = {}
 
@@ -95,6 +100,43 @@ function UIController:Start()
 	local circulationController = self._circulationController
 	circulateButton.Activated:Connect(function()
 		circulationController:StartCycle()
+	end)
+
+	local breakthroughButton = Instance.new("TextButton")
+	breakthroughButton.Name = "BreakthroughButton"
+	breakthroughButton.Size = UDim2.fromOffset(160, 44)
+	breakthroughButton.Position = UDim2.new(0.5, -80, 0, 210)
+	breakthroughButton.BackgroundColor3 = Color3.fromRGB(150, 60, 200)
+	breakthroughButton.Font = Enum.Font.GothamBold
+	breakthroughButton.TextSize = 18
+	breakthroughButton.TextColor3 = Color3.fromRGB(235, 240, 245)
+	breakthroughButton.Text = "Breakthrough"
+	breakthroughButton.Parent = screen
+
+	breakthroughButton.Activated:Connect(function()
+		local attemptBreakthrough = Remotes.Get("AttemptBreakthrough") :: RemoteEvent
+		attemptBreakthrough:FireServer()
+	end)
+
+	local toastLabel = Instance.new("TextLabel")
+	toastLabel.Name = "ToastLabel"
+	toastLabel.Size = UDim2.fromOffset(320, 28)
+	toastLabel.Position = UDim2.new(0.5, -160, 0, 265)
+	toastLabel.BackgroundTransparency = 1
+	toastLabel.Font = Enum.Font.Gotham
+	toastLabel.TextSize = 15
+	toastLabel.TextColor3 = Color3.fromRGB(220, 70, 70)
+	toastLabel.Text = ""
+	toastLabel.Parent = screen
+
+	local notify = Remotes.Get("Notify") :: RemoteEvent
+	notify.OnClientEvent:Connect(function(text: string, _kind: string?)
+		toastLabel.Text = text
+		task.delay(TOAST_DURATION, function()
+			if toastLabel.Text == text then
+				toastLabel.Text = ""
+			end
+		end)
 	end)
 
 	local function refresh()

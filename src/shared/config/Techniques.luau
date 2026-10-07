@@ -22,6 +22,14 @@ Techniques.data = {
 		activeMultiplier = 1.0,
 		passiveMultiplier = 1.0,
 	},
+	-- Granted by the hidden cave (Phase 4); name is a placeholder.
+	BlackSwordBreath = {
+		display = "Black Sword Ancestor's Breathing Art",
+		pattern = { "Dantian", "Core", "LeftArm", "Head", "RightArm", "Core", "Dantian" },
+		tempo = 0.75,
+		activeMultiplier = 1.5,
+		passiveMultiplier = 1.1,
+	},
 } :: { [TechniqueId]: TechniqueData }
 
 function Techniques.Get(id: string): TechniqueData

@@ -6,6 +6,8 @@ local order: { string } = {
 	"InputController",
 	"MeditationController",
 	"QiCirculationController",
+	"TribulationController",
+	"AuraController",
 	"UIController",
 }
 

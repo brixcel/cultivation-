@@ -1,12 +1,21 @@
 --!strict
 -- Server bootstrap: require every service, then Init all, then Start all.
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local services = script.services
+
+-- Create every remote up front so a client's WaitForChild never races a service
+-- that only calls Remotes.Get lazily deep inside a conditional path.
+require(ReplicatedStorage.Shared.remotes.Remotes).CreateAll()
 
 local order = {
 	"DataService",
 	"PlayerStateService",
+	"BroadcastService",
 	"CultivationService",
 	"CirculationService",
+	"TribulationService",
+	"BreakthroughService",
+	"CaveService",
 }
 
 local loaded = {}

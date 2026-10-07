@@ -17,4 +17,14 @@ return {
 	COMBO_STEP = 0.05, -- +5% per consecutive perfect/great hit
 	COMBO_MAX = 2.0,
 	CYCLE_TIMEOUT = 15, -- seconds; server watchdog if a client never submits
+
+	-- Breakthrough and tribulation (Phase 3)
+	TRIBULATION_FAIL_QI_LOSS = 0.30,
+	TRIBULATION_COOLDOWN = 60,
+	TRIBULATION_WAVE_COUNT = 3,
+	TRIBULATION_TELEGRAPH_TIME = 1.2,
+	TRIBULATION_WAVE_GAP = 0.5,
+	TRIBULATION_HIT_RADIUS = 5, -- studs; stand within this of the strike at impact time = hit
+	TRIBULATION_MAX_HITS_TO_SURVIVE = 1, -- can take this many hits and still pass
+	ATTEMPT_BREAKTHROUGH_COOLDOWN = 5, -- seconds between AttemptBreakthrough remote calls
 }

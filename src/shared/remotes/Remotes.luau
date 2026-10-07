@@ -15,6 +15,10 @@ local DEFINITIONS: { [string]: RemoteKind } = {
 	Notify = "RemoteEvent",
 	RequestCycle = "RemoteFunction",
 	SubmitCycle = "RemoteFunction",
+	AttemptBreakthrough = "RemoteEvent",
+	TribulationWave = "RemoteEvent",
+	TribulationResult = "RemoteEvent",
+	Announce = "RemoteEvent",
 }
 
 local Remotes = {}
@@ -58,6 +62,16 @@ function Remotes.Get(name: string): RemoteEvent | RemoteFunction
 
 	cache[name] = instance
 	return instance :: any
+end
+
+-- Server-only: creates every defined remote immediately, so a client's
+-- WaitForChild during its own Start() never races a service that only calls
+-- Remotes.Get lazily deep inside a conditional path.
+function Remotes.CreateAll()
+	assert(IS_SERVER, "Remotes.CreateAll may only be called from the server")
+	for name in DEFINITIONS do
+		Remotes.Get(name)
+	end
 end
 
 return Remotes
