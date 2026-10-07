@@ -14,6 +14,7 @@ local Balance = require(Shared.config.Balance)
 local RateLimiter = require(Shared.util.RateLimiter)
 
 local TICK_INTERVAL = 1 -- seconds; server ticks cultivation at 1 Hz
+local SET_MEDITATING_MIN_INTERVAL = 1 / 4 -- 4/s per architecture.md's networking contract
 
 local CultivationService = {}
 
@@ -25,6 +26,7 @@ function CultivationService:Init(services: { [string]: any })
 	self._rate = RateLimiter.new(Balance.MAX_QI_PER_CALL * Balance.QI_BUDGET_MARGIN, TICK_INTERVAL)
 	self._meditateAnchor = {} :: { [Player]: Vector3 }
 	self._accumulator = 0
+	self._lastSetMeditating = {} :: { [Player]: number }
 end
 
 function CultivationService:AddQi(player: Player, amount: number, source: string)
@@ -51,10 +53,32 @@ function CultivationService:AddQi(player: Player, amount: number, source: string
 	self._stateService:SyncAttributes(player)
 end
 
+-- Non-additive Qi mutations (realm-transition resets/penalties) also route through
+-- this module, so Qi has exactly one owner even when the change isn't a gain.
+function CultivationService:SetQi(player: Player, amount: number)
+	local profile = self._dataService:GetProfile(player)
+	if not profile then
+		return
+	end
+
+	local maxQi = Realms.Get(profile.Data.realm).qiToBreakthrough
+	local clamped = math.clamp(amount, 0, maxQi)
+	self._dataService:Update(player, function(data)
+		data.qi = clamped
+	end)
+	self._stateService:SyncAttributes(player)
+end
+
 function CultivationService:_onSetMeditating(player: Player, on: boolean)
 	if typeof(on) ~= "boolean" then
 		return
 	end
+
+	local now = os.clock()
+	if now - (self._lastSetMeditating[player] or 0) < SET_MEDITATING_MIN_INTERVAL then
+		return
+	end
+	self._lastSetMeditating[player] = now
 
 	local character = player.Character
 	local root = character and character:FindFirstChild("HumanoidRootPart") :: BasePart?
@@ -63,6 +87,14 @@ function CultivationService:_onSetMeditating(player: Player, on: boolean)
 	end
 
 	if on then
+		-- Only Idle -> Meditating is a legal entry point here. Circulating -> Meditating
+		-- is also allowed by the state machine, but only CirculationService may trigger
+		-- it (on cycle completion/timeout) -- otherwise a player could fire
+		-- SetMeditating(true) while a cycle is still pending to resume passive Qi ticks
+		-- concurrently with the eventual active-cycle reward.
+		if self._stateService:GetState(player) ~= "Idle" then
+			return
+		end
 		if not self._stateService:TrySetState(player, "Meditating") then
 			return
 		end
@@ -116,6 +148,7 @@ function CultivationService:Start()
 
 	Players.PlayerRemoving:Connect(function(player: Player)
 		self._meditateAnchor[player] = nil
+		self._lastSetMeditating[player] = nil
 		self._rate:Clear(player)
 	end)
 

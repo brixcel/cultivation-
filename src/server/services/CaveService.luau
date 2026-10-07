@@ -36,9 +36,16 @@ local function realmIndex(realmId: string): number
 	return 1
 end
 
-function CaveService:_onChannel(player: Player)
+function CaveService:_onChannel(player: Player, formation: BasePart, maxDistance: number)
 	local profile = self._dataService:GetProfile(player)
 	if not profile then
+		return
+	end
+
+	-- Defense-in-depth: don't rely solely on ProximityPrompt's own range enforcement.
+	local character = player.Character
+	local root = character and (character:FindFirstChild("HumanoidRootPart") :: BasePart?)
+	if not root or (root.Position - formation.Position).Magnitude > maxDistance then
 		return
 	end
 
@@ -74,9 +81,15 @@ function CaveService:_attachFormation(formation: Instance)
 		prompt.MaxActivationDistance = 10
 		prompt.Parent = formation :: any
 	end
+	local activePrompt = prompt :: ProximityPrompt
 
-	(prompt :: ProximityPrompt).Triggered:Connect(function(player: Player)
-		self:_onChannel(player)
+	local anchorPart = formation:IsA("BasePart") and formation or formation:FindFirstChildWhichIsA("BasePart")
+	if not anchorPart then
+		return
+	end
+
+	activePrompt.Triggered:Connect(function(player: Player)
+		self:_onChannel(player, anchorPart :: BasePart, activePrompt.MaxActivationDistance)
 	end)
 end
 

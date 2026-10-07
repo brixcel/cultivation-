@@ -16,6 +16,7 @@ function BreakthroughService:Init(services: { [string]: any })
 	self._stateService = services.PlayerStateService
 	self._tribulationService = services.TribulationService
 	self._broadcastService = services.BroadcastService
+	self._cultivationService = services.CultivationService
 	self._lastAttempt = {} :: { [Player]: number }
 end
 
@@ -80,9 +81,9 @@ function BreakthroughService:_attempt(player: Player)
 		local realmData = Realms.Get(toRealm)
 		self._dataService:Update(player, function(data)
 			data.realm = toRealm
-			data.qi = 0
 			data.stats.tribulationsPassed += 1
 		end)
+		self._cultivationService:SetQi(player, 0)
 		player:SetAttribute("Title", realmData.title)
 		player:SetAttribute("Aura", realmData.aura)
 		self._stateService:TrySetState(player, "Idle")
@@ -92,10 +93,11 @@ function BreakthroughService:_attempt(player: Player)
 			`{player.Name} survived the Heavenly Tribulation and reached {realmData.display}!`
 		)
 	else
+		local penalizedQi = math.floor(profile.Data.qi * (1 - Balance.TRIBULATION_FAIL_QI_LOSS))
 		self._dataService:Update(player, function(data)
-			data.qi = math.floor(data.qi * (1 - Balance.TRIBULATION_FAIL_QI_LOSS))
 			data.stats.tribulationsFailed += 1
 		end)
+		self._cultivationService:SetQi(player, penalizedQi)
 		self._stateService:TrySetState(player, "Cooldown")
 		self._stateService:SyncAttributes(player)
 		tribulationResult:FireClient(player, false)
