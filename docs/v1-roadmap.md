@@ -106,11 +106,11 @@ Each phase ends with a gate; don't start the next phase until the gate passes. W
 
 ### Phase 0 — Setup (week 1)
 
-- [ ] Install everything in "Everything you need" and connect both MCP servers to Claude Code
-- [ ] Create the private GitHub repo, Rojo project, and folder structure above
-- [ ] Write CLAUDE.md and copy the design doc into `docs/`
-- [ ] Install dstack and luau-best-practices
-- [ ] Ask Claude to build a hello-world: a part that changes color when touched, synced via Rojo, committed to Git
+- [x] Install everything in "Everything you need" and connect both MCP servers to Claude Code
+- [x] Create the private GitHub repo, Rojo project, and folder structure above
+- [x] Write CLAUDE.md and copy the design doc into `docs/`
+- [x] Install dstack and luau-best-practices
+- [x] Ask Claude to build a hello-world: a part that changes color when touched, synced via Rojo, committed to Git
 
 **Gate:** Claude can edit code, run a playtest through Studio MCP, and read the Output window.
 
@@ -118,55 +118,55 @@ Starter prompt: *"Read CLAUDE.md and docs/design.md. Using the dstack architect 
 
 ### Phase 1 — Data and passive meditation (week 2)
 
-- [ ] DataService with ProfileStore: realm, Qi, technique, cave flag
-- [ ] Cultivate button: character sits cross-legged, Qi rises slowly on the server
-- [ ] Qi bar and realm label on screen
-- [ ] Test: leave and rejoin, Qi is still there
+- [x] DataService with ProfileStore: realm, Qi, technique, cave flag
+- [x] Cultivate button: character sits cross-legged, Qi rises slowly on the server
+- [x] Qi bar and realm label on screen
+- [x] Test: leave and rejoin, Qi is still there
 
 **Gate:** Progress survives 10 rejoins and a server shutdown.
 
 ### Phase 2 — Realms and active Qi circulation (weeks 3–4)
 
-- [ ] Realm config: Mortal, Qi Condensation, Foundation Establishment with Qi thresholds
-- [ ] Active circulation minigame: follow the meridian path (head, arms, core, dantian) with PERFECT/GREAT timing and a combo multiplier
-- [ ] Active done well should be about 3–5× faster than passive (tune in Balance.luau)
-- [ ] Mobile tap controls for the minigame
-- [ ] Server validates minigame results so clients can't fake combos
+- [x] Realm config: Mortal, Qi Condensation, Foundation Establishment with Qi thresholds
+- [x] Active circulation minigame: follow the meridian path (head, arms, core, dantian) with PERFECT/GREAT timing and a combo multiplier
+- [x] Active done well should be about 3–5× faster than passive (tune in Balance.luau)
+- [x] Mobile tap controls for the minigame
+- [x] Server validates minigame results so clients can't fake combos
 
 **Gate:** You still enjoy the minigame on your 30th run. If not, redesign it before moving on.
 
 ### Phase 3 — Breakthrough and tribulation (week 5)
 
-- [ ] Breakthrough becomes available at full Qi
-- [ ] Tribulation event: sky darkens, lightning strikes, the player must survive or complete a short challenge
-- [ ] Failure costs some Qi but never wipes the realm
-- [ ] Success: new aura, title, and a server-wide message
+- [x] Breakthrough becomes available at full Qi
+- [x] Tribulation event: sky darkens, lightning strikes, the player must survive or complete a short challenge
+- [x] Failure costs some Qi but never wipes the realm
+- [x] Success: new aura, title, and a server-wide message
 
 **Gate:** A friend watching your screen says "wait, do that again."
 
 ### Phase 4 — Hidden cave and technique (week 6)
 
 - [ ] Clues in the world (glowing stones, an old inscription) pointing toward the waterfall
-- [ ] Hidden formation behind the waterfall; entering shows "You have entered the Tomb of ..."
-- [ ] Reward: one technique that changes the circulation pattern and boosts active cultivation
-- [ ] Cave access saved per player
+- [x] Hidden formation behind the waterfall; entering shows "You have entered the Tomb of ..."
+- [x] Reward: one technique that changes the circulation pattern and boosts active cultivation
+- [x] Cave access saved per player
 
 **Gate:** A tester finds the cave from clues alone, without you telling them.
 
 ### Phase 5 — Art pass with Blender (week 7)
 
-- [ ] Install the blender-skills pack (and optionally the animation skill)
-- [ ] Low-poly props: meditation platform, shrine, cave entrance, waterfall rocks, tomb interior
+- [ ] Install the blender-skills pack (and optionally the animation skill) — not installed; built props by scripting Blender MCP directly instead
+- [x] Low-poly props: meditation platform, shrine, cave entrance, waterfall rocks, tomb interior
 - [ ] Meditation pose and breakthrough animation on R15
-- [ ] Aura and lightning VFX with particle emitters in Studio
+- [x] Aura and lightning VFX with particle emitters in Studio
 - [ ] Use Gemini to critique screenshots for readability and style consistency
 
 **Gate:** The game looks consistent in one screenshot, even if simple.
 
 ### Phase 6 — Polish, security, playtest (week 8)
 
-- [ ] Ask Claude to audit every remote for exploits and every data path for loss
-- [ ] Onboarding: first 2 minutes teach meditation and hint at the minigame
+- [x] Ask Claude to audit every remote for exploits and every data path for loss
+- [x] Onboarding: first 2 minutes teach meditation and hint at the minigame
 - [ ] Publish as a private or friends-only experience
 - [ ] Run the playtest plan below
 
