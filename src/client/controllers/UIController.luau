@@ -40,6 +40,7 @@ end
 
 function UIController:Init(controllers: { [string]: any })
 	self._meditationController = controllers.MeditationController
+	self._circulationController = controllers.QiCirculationController
 end
 
 function UIController:Start()
@@ -78,6 +79,22 @@ function UIController:Start()
 	cultivateButton.Activated:Connect(function()
 		meditationController:Toggle()
 		cultivateButton.Text = if meditationController:IsMeditating() then "Stop" else "Cultivate"
+	end)
+
+	local circulateButton = Instance.new("TextButton")
+	circulateButton.Name = "CirculateButton"
+	circulateButton.Size = UDim2.fromOffset(160, 44)
+	circulateButton.Position = UDim2.new(0.5, -80, 0, 160)
+	circulateButton.BackgroundColor3 = Color3.fromRGB(212, 175, 55)
+	circulateButton.Font = Enum.Font.GothamBold
+	circulateButton.TextSize = 18
+	circulateButton.TextColor3 = Color3.fromRGB(20, 25, 22)
+	circulateButton.Text = "Circulate"
+	circulateButton.Parent = screen
+
+	local circulationController = self._circulationController
+	circulateButton.Activated:Connect(function()
+		circulationController:StartCycle()
 	end)
 
 	local function refresh()

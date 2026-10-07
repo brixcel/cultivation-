@@ -6,6 +6,7 @@ local order = {
 	"DataService",
 	"PlayerStateService",
 	"CultivationService",
+	"CirculationService",
 }
 
 local loaded = {}

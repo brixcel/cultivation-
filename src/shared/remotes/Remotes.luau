@@ -13,6 +13,8 @@ export type RemoteKind = "RemoteEvent" | "RemoteFunction"
 local DEFINITIONS: { [string]: RemoteKind } = {
 	SetMeditating = "RemoteEvent",
 	Notify = "RemoteEvent",
+	RequestCycle = "RemoteFunction",
+	SubmitCycle = "RemoteFunction",
 }
 
 local Remotes = {}

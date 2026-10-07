@@ -3,8 +3,10 @@
 local controllers = script.controllers
 
 local order: { string } = {
-	"UIController",
+	"InputController",
 	"MeditationController",
+	"QiCirculationController",
+	"UIController",
 }
 
 local loaded = {}

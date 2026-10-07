@@ -1,19 +1,19 @@
 --!strict
 -- server/services/PlayerStateService.luau
 -- One authoritative state per player. Every other service checks state before acting.
--- Phase 1 only needs Loading/Idle/Meditating; later phases add Circulating,
--- InTribulation, Cooldown, and InCave.
+-- Later phases add InTribulation, Cooldown, and InCave.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Realms = require(ReplicatedStorage.Shared.config.Realms)
 
-export type State = "Loading" | "Idle" | "Meditating"
+export type State = "Loading" | "Idle" | "Meditating" | "Circulating"
 
 local ALLOWED_TRANSITIONS: { [State]: { [State]: boolean } } = {
 	Idle = { Meditating = true },
-	Meditating = { Idle = true },
+	Meditating = { Idle = true, Circulating = true },
+	Circulating = { Meditating = true },
 }
 
 local PlayerStateService = {}
