@@ -97,11 +97,14 @@ function DataService:Start()
 		end
 	end)
 
-	game:BindToClose(function()
-		for _, profile in self._profiles do
-			profile:EndSession()
-		end
-	end)
+	-- No server-shutdown handling here: ProfileStore registers its own
+	-- game:BindToClose internally and already waits for every active profile's
+	-- save to actually finish before returning. A second BindToClose here that
+	-- calls EndSession() (which only task.spawns the save and returns
+	-- immediately, not waiting for it) would race ProfileStore's own shutdown
+	-- loop -- if ours marks a profile inactive first, ProfileStore's loop skips
+	-- it as already-inactive, and nothing then waits for that in-flight save,
+	-- risking data loss on a real shutdown.
 
 	print("[DataService] started")
 end
