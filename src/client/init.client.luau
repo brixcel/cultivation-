@@ -2,7 +2,10 @@
 -- Client bootstrap: require every controller, then Init all, then Start all.
 local controllers = script.controllers
 
-local order: { string } = {}
+local order: { string } = {
+	"UIController",
+	"MeditationController",
+}
 
 local loaded = {}
 for _, name in order do

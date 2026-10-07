@@ -3,7 +3,9 @@
 local services = script.services
 
 local order = {
-	"HelloService", -- Phase 0 smoke test; remove in Phase 1
+	"DataService",
+	"PlayerStateService",
+	"CultivationService",
 }
 
 local loaded = {}
