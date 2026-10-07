@@ -139,10 +139,23 @@ function UIController:Start()
 		end)
 	end)
 
+	local onboardingLabel = Instance.new("TextLabel")
+	onboardingLabel.Name = "OnboardingHint"
+	onboardingLabel.Size = UDim2.fromOffset(340, 50)
+	onboardingLabel.Position = UDim2.new(0.5, -170, 0, 300)
+	onboardingLabel.BackgroundTransparency = 1
+	onboardingLabel.Font = Enum.Font.Gotham
+	onboardingLabel.TextWrapped = true
+	onboardingLabel.TextSize = 14
+	onboardingLabel.TextColor3 = Color3.fromRGB(190, 195, 200)
+	onboardingLabel.Text = "Press Cultivate to begin meditating. Once meditating, try Circulate for faster Qi!"
+	onboardingLabel.Parent = screen
+
 	local function refresh()
 		local realm = player:GetAttribute("Realm")
 		local qi = player:GetAttribute("Qi")
 		local qiMax = player:GetAttribute("QiMax")
+		local tutorialDone = player:GetAttribute("TutorialDone")
 
 		if realm then
 			realmLabel.Text = tostring(realm)
@@ -152,6 +165,8 @@ function UIController:Start()
 			qiFill.Size = UDim2.fromScale(math.clamp(qi / qiMax, 0, 1), 1)
 			qiLabel.Text = `{math.floor(qi)} / {math.floor(qiMax)} Qi`
 		end
+
+		onboardingLabel.Visible = tutorialDone ~= true
 	end
 
 	player.AttributeChanged:Connect(refresh)

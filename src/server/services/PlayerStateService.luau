@@ -74,6 +74,7 @@ function PlayerStateService:SyncAttributes(player: Player)
 	player:SetAttribute("Qi", data.qi)
 	player:SetAttribute("QiMax", Realms.Get(data.realm).qiToBreakthrough)
 	player:SetAttribute("State", self:GetState(player))
+	player:SetAttribute("TutorialDone", data.flags.tutorialDone)
 end
 
 return PlayerStateService

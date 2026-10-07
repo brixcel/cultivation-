@@ -51,8 +51,26 @@ local function strikeAt(position: Vector3, telegraphTime: number)
 		bolt.CFrame = CFrame.new(position + Vector3.new(0, 20, 0))
 		bolt.Parent = workspace
 
+		local impactAttachment = Instance.new("Attachment")
+		impactAttachment.WorldPosition = position + Vector3.new(0, 0.5, 0)
+		impactAttachment.Parent = workspace.Terrain
+
+		local burst = Instance.new("ParticleEmitter")
+		burst.Texture = "rbxasset://textures/particles/sparkles_main.dds"
+		burst.Color = ColorSequence.new(Color3.fromRGB(255, 255, 255))
+		burst.Lifetime = NumberRange.new(0.3, 0.6)
+		burst.Speed = NumberRange.new(8, 14)
+		burst.SpreadAngle = Vector2.new(180, 180)
+		burst.Size = NumberSequence.new(0.6)
+		burst.Rate = 0
+		burst.Parent = impactAttachment
+		burst:Emit(30)
+
 		task.delay(0.15, function()
 			bolt:Destroy()
+		end)
+		task.delay(0.8, function()
+			impactAttachment:Destroy()
 		end)
 	end)
 end

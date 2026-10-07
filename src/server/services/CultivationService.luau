@@ -67,6 +67,14 @@ function CultivationService:_onSetMeditating(player: Player, on: boolean)
 			return
 		end
 		self._meditateAnchor[player] = root.Position
+
+		local profile = self._dataService:GetProfile(player)
+		if profile and not profile.Data.flags.tutorialDone then
+			self._dataService:Update(player, function(data)
+				data.flags.tutorialDone = true
+			end)
+			self._stateService:SyncAttributes(player)
+		end
 	else
 		self._stateService:TrySetState(player, "Idle")
 		self._meditateAnchor[player] = nil
